@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="billingsystem.cpp" />
+    <ClCompile Include="market billing system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classes.h" />

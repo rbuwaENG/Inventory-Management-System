@@ -4,6 +4,7 @@ using namespace std;
 int k = 7, r = 0, flag = 0;
 COORD coord = { 0, 0 };
 
+
 int main()
 {
     cout.setf(ios::fixed);
@@ -20,6 +21,7 @@ menu:
     cout << "\t\t2.Add/Remove/Edit Item\n\n";
     cout << "\t\t3.Show Item Details\n\n";
     cout << "\t\t4.Exit\n\n";
+    cout << "\t\t5.Select Mode\n\n";
     cout << "\t\tPlease Enter Required Option: ";
     int ch, ff;
     float gtotal;
@@ -71,6 +73,7 @@ menu:
                 if (!fin.eof())
                 {
                     amt.report(k);
+                    k = k + 1;
                     gtotal += amt.retnetamt();
                     ff = 0;
                 }
@@ -248,6 +251,30 @@ menu:
         else
         {
             goto menu;
+        }
+    case 5:
+        system("cls");
+        gotoxy(25, 2);
+        cout << "Choose Mode";
+        gotoxy(25, 3);
+        cout << "=================\n\n";
+        cout << "\n\t\t1.Education Mode\n\n";
+        cout << "\t\t2.Regular Mode\n\n";
+        cout << "\t\t3.Back to Main Menu ";
+        int Mod,a;
+        cin >> Mod;
+        switch (Mod) {
+            case 1:
+                 a = 1;
+            case 2:
+                 a = 0;
+            case 3:
+                goto menu;
+            default:
+                cout << "\n\n\t\tWrong Choice!!! Retry";
+                _getch();
+                goto db;
+
         }
     default:
         cout << "\n\n\t\tWrong Choice....Please Retry!";

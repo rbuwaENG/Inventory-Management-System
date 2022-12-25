@@ -8,7 +8,7 @@
 #include<iomanip>
 using namespace std;
 //global variable declaration
-int k=7,r=0,flag=0;
+int k=7,r=0,flag=0, a = 0;
 COORD coord = {0, 0};
 
 void gotoxy(int x, int y)
@@ -173,15 +173,21 @@ int main()
     fstream tmp("temp.dat",ios::binary|ios::out);
 menu:
     system("cls");
+    if (a == 1) {
+        gotoxy(10, 1);
+        cout << "EDU_MOD:";
+    }
     gotoxy(25,2);
+    cout<<a;
     cout<<"Super Market Billing ";
     gotoxy(25,3);
-    cout<<"===========================\n\n";
-    cout<<"\n\t\t1.Bill Report\n\n";
-    cout<<"\t\t2.Add/Remove/Edit Item\n\n";
-    cout<<"\t\t3.Show Item Details\n\n";
-    cout<<"\t\t4.Exit\n\n";
-    cout<<"\t\tPlease Enter Required Option: ";
+    cout << "===========================\n\n";
+    cout << "\n\t\t1.Bill Report\n\n";
+    cout << "\t\t2.Add/Remove/Edit Item\n\n";
+    cout << "\t\t3.Show Item Details\n\n";
+    cout << "\t\t4.Exit\n\n";
+    cout << "\t\t5.Select Mode\n\n";
+    cout << "\t\tPlease Enter Required Option: ";
     int ch,ff;
     float gtotal;
     cin>>ch;
@@ -202,6 +208,10 @@ ss:
         if(cho==1)
         {
             system("cls");
+            if (a == 1) {
+                gotoxy(10, 1);
+                cout << "EDU_MOD:amount-report,amount-retnetamt";
+            }
             gotoxy(30,3);
             cout<<" BILL DETAILS ";
             gotoxy(3,5);
@@ -265,6 +275,10 @@ db:
         case 1:
             fout.open("itemstore.dat",ios::binary|ios::app);
             amt.add();
+            if (a == 1) {
+                gotoxy(10, 1);
+                cout << "EDU_MOD:amount-add";
+            }
             cout<<"\n\t\tItem Added Successfully!";
             _getch();
             goto db;
@@ -296,8 +310,16 @@ db:
                         system("cls");
                         cout<<"\n\t\tCurrent Details are\n";
                         amt.show();
+                        if (a == 1) {
+                            gotoxy(10, 1);
+                            cout << "EDU_MOD:amount-show";
+                        }
                         cout<<"\n\n\t\tEnter New Details\n";
                         amt.add();
+                        if (a == 1) {
+                            gotoxy(10, 1);
+                            cout << "EDU_MOD:amount-add";
+                        }
                         cout<<"\n\t\tItem Details editted";
                     }
                 }
@@ -381,6 +403,10 @@ db:
             if(x==ino)
             {
                 amt.pay();
+                if (a == 1) {
+                    gotoxy(10, 1);
+                    cout << "EDU_MOD:amount-pay";
+                }
                 flag=1;
                 break;
             }
@@ -410,6 +436,29 @@ db:
         {
             goto menu;
         }
+    case 5:
+        system("cls");
+        gotoxy(25, 2);
+        cout << "Choose Mode";
+        gotoxy(25, 3);
+        cout << "=================\n\n";
+        cout << "\n\t\t1.Education Mode\n\n";
+        cout << "\t\t2.Regular Mode\n\n";
+        cout << "\t\t3.Back to Main Menu ";
+        int mod;
+        cin >> mod;
+        if (mod == 1) {
+            a = 1;
+            goto menu;
+        }
+        else if (mod == 2) {
+            a = 0;
+            goto menu;
+        }
+        else if (mod == 3) {
+            goto menu;
+        }
+       
     default:
         cout<<"\n\n\t\tWrong Choice....Please Retry!";
         _getch();
