@@ -33,17 +33,19 @@ class item
     date d;
 public:
     void add()
-    {
+    {   
+        gotoxy(25, 14);
         cout<<"\n\n\tItem No: ";
         cin>>itemno;
         cout<<"\n\n\tName of the item: ";
         cin>>name;
 //gets(name);
-        cout<<"\n\n\tManufacturing Date(dd-mm-yy): ";
+        cout<<"\n\n\tExpired Date(dd-mm-yy): ";
         cin>>d.mm>>d.dd>>d.yy;
     }
     void show()
     {
+        gotoxy(25, 5);
         cout<<"\n\tItem No: ";
         cout<<itemno;
         cout<<"\n\n\tName of the item: ";
@@ -82,7 +84,15 @@ public:
 } amt;
 
 void amount::add()
-{
+{   
+    if (a == 1) {
+        gotoxy(10, 1);
+        cout << "EDU_MOD:amount-add";
+    }
+    else {
+        gotoxy(10, 1);
+        cout << "REG_MOD:ON";
+    }
     item::add();
     cout<<"\n\n\tPrice: ";
     cin>>price;
@@ -98,11 +108,28 @@ void amount::add()
 }
 void amount::calculate()
 {
+    if (a == 1) {
+        gotoxy(10, 1);
+        cout << "EDU_MOD:amount-calculate";
+    }
+    else {
+        gotoxy(10, 1);
+        cout << "REG_MOD:ON";
+    }
     gross=price+(price*(tax/100));
     netamt=qty*(gross-(gross*(dis/100)));
 }
 void amount::show()
-{
+{   
+
+    if (a == 1) {
+        gotoxy(10, 1);
+        cout << "EDU_MOD:amount-show";
+    }
+    else {
+        gotoxy(10, 1);
+        cout << "REG_MOD:ON";
+    }
     fin.open("itemstore.dat",ios::binary);
     fin.read((char*)&amt,sizeof(amt));
     item::show();
@@ -112,7 +139,16 @@ void amount::show()
 }
 
 void amount::report()
-{
+{   
+
+    if (a == 1) {
+        gotoxy(10, 1);
+        cout << "EDU_MOD:amount-report";
+    }
+    else {
+        gotoxy(10, 1);
+        cout << "REG_MOD:ON";
+    }
     item::report();
     gotoxy(23,k);
     cout<<price;
@@ -153,6 +189,15 @@ void amount::report()
 
 void amount::pay()
 {
+
+    if (a == 1) {
+        gotoxy(10, 1);
+        cout << "EDU_MOD:amount-pay";
+    }
+    else {
+        gotoxy(10, 1);
+        cout << "REG_MOD:ON";
+    }
     show();
     cout<<"\n\n\n\t\t*********************************************";
     cout<<"\n\t\t                 DETAILS                  ";
@@ -171,18 +216,22 @@ int main()
     cout.setf(ios::showpoint);
     cout<<setprecision(2);
     fstream tmp("temp.dat",ios::binary|ios::out);
+  
 menu:
     system("cls");
     if (a == 1) {
         gotoxy(10, 1);
-        cout << "EDU_MOD:";
+        cout << "EDU_MOD:ON";
+    }
+    else {
+        gotoxy(10, 1);
+        cout << "REG_MOD:ON";
     }
     gotoxy(25,2);
-    cout<<a;
-    cout<<"Super Market Billing ";
+    cout<<"Super Market Inventory Manage System ";
     gotoxy(25,3);
-    cout << "===========================\n\n";
-    cout << "\n\t\t1.Bill Report\n\n";
+    cout << "====================================\n\n";
+    cout << "\n\t\t1.Inventory Report\n\n";
     cout << "\t\t2.Add/Remove/Edit Item\n\n";
     cout << "\t\t3.Show Item Details\n\n";
     cout << "\t\t4.Exit\n\n";
@@ -196,8 +245,16 @@ menu:
     case 1:
 ss:
         system("cls");
+        if (a == 1) {
+            gotoxy(10, 1);
+            cout << "EDU_MOD:ON";
+        }
+        else {
+            gotoxy(10, 1);
+            cout << "REG_MOD:ON";
+        }
         gotoxy(25,2);
-        cout<<"Bill Details";
+        cout<<"Inventory Details";
         gotoxy(25,3);
         cout<<"================\n\n";
         cout<<"\n\t\t1.All Items\n\n";
@@ -210,10 +267,14 @@ ss:
             system("cls");
             if (a == 1) {
                 gotoxy(10, 1);
-                cout << "EDU_MOD:amount-report,amount-retnetamt";
+                cout << "EDU_MOD:ON";
+            }
+            else {
+                gotoxy(10, 1);
+                cout << "REG_MOD:ON";
             }
             gotoxy(30,3);
-            cout<<" BILL DETAILS ";
+            cout<<" INVENTORY DETAILS ";
             gotoxy(3,5);
             cout<<"ITEM NO";
             gotoxy(13,5);
@@ -260,8 +321,16 @@ ss:
     case 2:
 db:
         system("cls");
+        if (a == 1) {
+            gotoxy(10, 1);
+            cout << "EDU_MOD:ON";
+        }
+        else {
+            gotoxy(10, 1);
+            cout << "REG_MOD:ON";
+        }
         gotoxy(25,2);
-        cout<<"Bill Editor";
+        cout<<"Inventory Editor";
         gotoxy(25,3);
         cout<<"=================\n\n";
         cout<<"\n\t\t1.Add Item Details\n\n";
@@ -275,10 +344,6 @@ db:
         case 1:
             fout.open("itemstore.dat",ios::binary|ios::app);
             amt.add();
-            if (a == 1) {
-                gotoxy(10, 1);
-                cout << "EDU_MOD:amount-add";
-            }
             cout<<"\n\t\tItem Added Successfully!";
             _getch();
             goto db;
@@ -308,18 +373,11 @@ db:
                         flag=1;
                         fout.seekp(r*sizeof(amt));
                         system("cls");
+                        gotoxy(25, 4);
                         cout<<"\n\t\tCurrent Details are\n";
                         amt.show();
-                        if (a == 1) {
-                            gotoxy(10, 1);
-                            cout << "EDU_MOD:amount-show";
-                        }
                         cout<<"\n\n\t\tEnter New Details\n";
                         amt.add();
-                        if (a == 1) {
-                            gotoxy(10, 1);
-                            cout << "EDU_MOD:amount-add";
-                        }
                         cout<<"\n\t\tItem Details editted";
                     }
                 }
@@ -386,6 +444,14 @@ db:
         }
     case 3:
         system("cls");
+        if (a == 1) {
+            gotoxy(10, 1);
+            cout << "EDU_MOD:ON";
+        }
+        else {
+            gotoxy(10, 1);
+            cout << "REG_MOD:ON";
+        }
         flag=0;
         int ino;
         cout<<"\n\n\t\tEnter Item Number :";
@@ -403,10 +469,6 @@ db:
             if(x==ino)
             {
                 amt.pay();
-                if (a == 1) {
-                    gotoxy(10, 1);
-                    cout << "EDU_MOD:amount-pay";
-                }
                 flag=1;
                 break;
             }
