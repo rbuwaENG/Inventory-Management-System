@@ -21,9 +21,6 @@
   <ItemGroup>
     <ClCompile Include="market billing system.cpp" />
   </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="classes.h" />
-  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

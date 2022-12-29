@@ -2,14 +2,17 @@
 #include<windows.h>
 #include<conio.h>
 #include<fstream>
+#include<sstream>
 #include<cstring>
 #include<cstdio>
 #include<cstdlib>
 #include<iomanip>
 using namespace std;
 //global variable declaration
-int k=7,r=0,flag=0, a = 0;
+int k = 7, r = 0, flag = 0, a = 0, l = 7, m = 0, chf[50],n=0,bcount =1;
+float total = 0.0;
 COORD coord = {0, 0};
+
 
 void gotoxy(int x, int y)
 {
@@ -25,6 +28,9 @@ struct date
 
 ofstream fout;
 ifstream fin;
+
+
+
 
 class item
 {
@@ -60,10 +66,37 @@ public:
         gotoxy(13,k);
         puts(name);
     }
+    void bill() {
+        gotoxy(3, l);
+        cout << itemno;
+        gotoxy(13, l);
+        puts(name);
+
+    }
     int retno()
     {
+        if (a == 1) {
+            gotoxy(10, 1);
+            cout << "EDU_MOD:amount-bill";
+        }
+        else {
+            gotoxy(10, 1);
+            cout << "REG_MOD:ON";
+        }
         return(itemno);
 
+    }
+    string retname() {
+        if (a == 1) {
+            gotoxy(10, 1);
+            cout << "EDU_MOD:amount-bill";
+        }
+        else {
+            gotoxy(10, 1);
+            cout << "REG_MOD:ON";
+        }
+        string namb = name;
+        return(namb);
     }
 
 };
@@ -77,9 +110,13 @@ public:
     void report();
     void calculate();
     void pay();
+    void bill();
     float retnetamt()
     {
         return(netamt);
+    }
+    float retqty() {
+        return(qty);
     }
 } amt;
 
@@ -105,6 +142,8 @@ void amount::add()
     calculate();
     fout.write((char *)&amt,sizeof(amt));
     fout.close();
+    gotoxy(25, 35);
+    cout << "\n\t\tItem Added Successfully!";
 }
 void amount::calculate()
 {
@@ -210,6 +249,29 @@ void amount::pay()
     cout<<"\n\t\t*********************************************";
 }
 
+void amount::bill() {
+    if (a == 1) {
+        gotoxy(10, 1);
+        cout << "EDU_MOD:amount-bill";
+    }
+    else {
+        gotoxy(10, 1);
+        cout << "REG_MOD:ON";
+    }
+  
+    item::bill();
+    gotoxy(23, l);
+    cout <<qty;
+    gotoxy(33, l);
+    cout << netamt;
+
+}
+
+bool empty(ifstream& pFile)
+{
+    return pFile.peek() == ifstream::traits_type::eof();
+}
+
 int main()
 {
     cout.setf(ios::fixed);
@@ -231,11 +293,12 @@ menu:
     cout<<"Super Market Inventory Manage System ";
     gotoxy(25,3);
     cout << "====================================\n\n";
-    cout << "\n\t\t1.Inventory Report\n\n";
-    cout << "\t\t2.Add/Remove/Edit Item\n\n";
-    cout << "\t\t3.Show Item Details\n\n";
-    cout << "\t\t4.Exit\n\n";
-    cout << "\t\t5.Select Mode\n\n";
+    cout << "\n\t\t1.Select Mode\n\n";
+    cout << "\t\t2.Inventory Report\n\n";
+    cout << "\t\t3.Add/Remove/Edit Item\n\n";
+    cout << "\t\t4.Show Item Details In Inventory\n\n";
+    cout << "\t\t5.Generate Bill\n\n";
+    cout << "\t\t6.Exit\n\n";
     cout << "\t\tPlease Enter Required Option: ";
     int ch,ff;
     float gtotal;
@@ -243,6 +306,29 @@ menu:
     switch(ch)
     {
     case 1:
+        system("cls");
+        gotoxy(25, 2);
+        cout << "Choose Mode";
+        gotoxy(25, 3);
+        cout << "=================\n\n";
+        cout << "\n\t\t1.Education Mode\n\n";
+        cout << "\t\t2.Regular Mode\n\n";
+        cout << "\t\t3.Back to Main Menu ";
+        int mod;
+        cin >> mod;
+        if (mod == 1) {
+            a = 1;
+            goto menu;
+        }
+        else if (mod == 2) {
+            a = 0;
+            goto menu;
+        }
+        else if (mod == 3) {
+            goto menu;
+        }
+
+    case 2:
 ss:
         system("cls");
         if (a == 1) {
@@ -290,9 +376,19 @@ ss:
             gotoxy(64,5);
             cout<<"NET AMOUNT";
             fin.open("itemstore.dat",ios::binary);
-            if(!fin)
+
+            if (!fin)
             {
-                cout<<"\n\nFile Not Found...";
+                cout << "\n\n\t\tInventory is empty add details...";
+                cout << "\n\t\tReturning to main menu in 10s...";
+                Sleep(10000);
+                goto menu;
+            }
+            else if (empty(fin)) {
+
+                cout << "\n\n\t\tInventory is empty add details...";
+                cout << "\n\t\tReturning to main menu in 10s...";
+                Sleep(10000);
                 goto menu;
             }
             fin.seekg(0);
@@ -318,7 +414,7 @@ ss:
             goto menu;
         }
         goto ss;
-    case 2:
+    case 3:
 db:
         system("cls");
         if (a == 1) {
@@ -344,7 +440,7 @@ db:
         case 1:
             fout.open("itemstore.dat",ios::binary|ios::app);
             amt.add();
-            cout<<"\n\t\tItem Added Successfully!";
+            //cout<<"\n\t\tItem Added Successfully!";
             _getch();
             goto db;
 
@@ -355,9 +451,18 @@ db:
             cin>>ino;
             fin.open("itemstore.dat",ios::binary);
             fout.open("itemstore.dat",ios::binary|ios::app);
-            if(!fin)
+            if (!fin)
             {
-                cout<<"\n\nFile Not Found...";
+                cout << "\n\n\t\tInventory is empty add details...";
+                cout << "\n\t\tReturning to main menu in 10s...";
+                Sleep(10000);
+                goto menu;
+            }
+            else if (empty(fin)) {
+
+                cout << "\n\n\t\tInventory is empty add details...";
+                cout << "\n\t\tReturning to main menu in 10s...";
+                Sleep(10000);
                 goto menu;
             }
             fin.seekg(0);
@@ -442,7 +547,7 @@ db:
             _getch();
             goto db;
         }
-    case 3:
+    case 4:
         system("cls");
         if (a == 1) {
             gotoxy(10, 1);
@@ -457,9 +562,18 @@ db:
         cout<<"\n\n\t\tEnter Item Number :";
         cin>>ino;
         fin.open("itemstore.dat",ios::binary);
-        if(!fin)
+        if (!fin)
         {
-            cout<<"\n\nFile Not Found...\nProgram Terminated!";
+            cout << "\n\n\t\tInventory is empty add details...";
+            cout << "\n\t\tReturning to main menu in 10s...";
+            Sleep(10000);
+            goto menu;
+        }
+        else if (empty(fin)) {
+
+            cout << "\n\n\t\tInventory is empty add details...";
+            cout << "\n\t\tReturning to main menu in 10s...";
+            Sleep(10000);
             goto menu;
         }
         fin.seekg(0);
@@ -478,46 +592,161 @@ db:
         _getch();
         fin.close();
         goto menu;
-    case 4:
+    case 5:
+bill:
         system("cls");
-        gotoxy(20,20);
-        cout<<"ARE YOU SURE, YOU WANT TO EXIT (Y/N)?";
-        char yn;
-        cin>>yn;
-        if((yn=='Y')||(yn=='y'))
+        if (a == 1) {
+            gotoxy(10, 1);
+            cout << "EDU_MOD:ON";
+        }
+        else {
+            gotoxy(10, 1);
+            cout << "REG_MOD:ON";
+        }
+        gotoxy(25, 2);
+        cout << "Bill";
+        gotoxy(25, 3);
+        cout << "======\n\n";
+        gotoxy(3, 5);
+        cout << "ITEM NO";
+        gotoxy(13, 5);
+        cout << "NAME";
+        gotoxy(23, 5);
+        cout << "QUANTITY";
+        gotoxy(33, 5);
+        cout << "PRICE";
+  
+
+        int  sel;
+        fin.open("itemstore.dat", ios::binary);
+        fin.seekg(0);
+        m = 0;
+        l = 7;
+        total = 0.0;
+        while (!fin.eof())
         {
-            gotoxy(12,20);
+            fin.read((char*)&amt, sizeof(amt));
+            if (!fin.eof())
+            {
+                int x = amt.item::retno();
+                for (int i = 0; i <= n; i++) {
+                    if (x == chf[i] && chf[i] >0)
+                    {
+                        fout.seekp(m * sizeof(amt));
+                        amt.bill();
+                        total = total + amt.retnetamt();
+                        l = l + 1;
+                        
+
+                    }
+                    
+            }
+              
+              
+            }
+            m++;
+        }
+        
+        fin.close();
+        gotoxy(17, l+5);
+        cout << "\n\t\t1.Add Item From Inventory\n\n";
+        cout << "\t\t2.Generate Bill\n\n";
+        cout << "\t\t3.Clear Bill\n\n";
+        cout << "\t\t4.Back\n\n";
+        cout << "\t\tPlease Enter Required Option: ";
+        cin >> sel;
+        if (sel == 1) {
+         cout << "\n\t\tEnter Item NO:";
+         cin>>chf[n];
+         n++;
+         goto bill;
+        }
+        else if (sel == 2) {
+            gotoxy(33, l + 1);
+            cout << "------------\r";
+            gotoxy(33, l + 2);
+            cout << total << "\r";
+            gotoxy(33, l + 3);
+            cout << "------------\r";
+            stringstream stream;
+            stream << bcount;
+            string billd;
+            stream >> billd;
+            string billkey = "bill";
+            string billamt =billkey.append(billd);
+            billamt.append(".txt");
+            ofstream bill(billamt);
+            bill << "\t\t\t\t\tSuper Market bill\n";
+            bill << "\t\t\t\t\t===========================\n\n";
+            fin.open("itemstore.dat", ios::binary);
+            fin.seekg(0);
+            bill << "\t\tITEM NO" << "\t\t\tNAME" << "\t\t\tQUANTITY" << "\t\tPRICE\n\n";
+            while (!fin.eof()) {
+                fin.read((char*)&amt, sizeof(amt));
+                int x = amt.item::retno();
+                for (int i = 0; i <= n; i++) {
+                    if (x == chf[i] && chf[i] > 0)
+                    {
+                        
+                        bill << "\t\t"<<amt.retno()<< "\t\t\t"<<amt.retname() << "\t\t\t"<<amt.retqty() << "\t\t\t"<<amt.retnetamt()<<"\n\n";
+
+                       
+                    }
+                }
+            }
+            bill << "\t\t******************************************************************************\n";
+            bill << "\t\t\t\t\t\tTOTAL = Rs."<<total<<"\n\n";
+            bill << "\t\t*********************************** THANKS ************************************";
+            fin.close();
+            bill.close();
+            gotoxy(20, l + 17);
+            cout << "\tWait A Second...Generating Bill..";
+            Sleep(10000);
+            goto clearb;
+
+            
+        }
+        else if (sel == 3) {
+clearb:
             system("cls");
-            cout<<"************************** THANKS **************************************";
+            //emptying array
+            for (int i : chf) {
+                chf[i] = 0;
+            }
+            n = 0;
+            goto bill;
+        }
+        else if (sel = 4) {
+            goto menu;
+        }
+
+
+    case 6:
+        system("cls");
+        gotoxy(25, 2);
+        cout << "Super Market Inventory Manage System ";
+        gotoxy(25, 3);
+        cout << "====================================\n\n";
+        gotoxy(20, 5);
+        cout << "ARE YOU SURE, YOU WANT TO EXIT (Y/N)?";
+        char yn;
+        cin >> yn;
+        if ((yn == 'Y') || (yn == 'y'))
+        {
+            gotoxy(12, 20);
+            system("cls");
+            cout << "Super Market Inventory Manage System ";
+            gotoxy(25, 3);
+            cout << "====================================\n\n";
+            gotoxy(20, 5);
+            cout << "************************** THANKS **************************************";
             _getch();
             exit(0);
         }
-        else if((yn=='N')||(yn=='n'))
+        else if ((yn == 'N') || (yn == 'n'))
             goto menu;
         else
         {
-            goto menu;
-        }
-    case 5:
-        system("cls");
-        gotoxy(25, 2);
-        cout << "Choose Mode";
-        gotoxy(25, 3);
-        cout << "=================\n\n";
-        cout << "\n\t\t1.Education Mode\n\n";
-        cout << "\t\t2.Regular Mode\n\n";
-        cout << "\t\t3.Back to Main Menu ";
-        int mod;
-        cin >> mod;
-        if (mod == 1) {
-            a = 1;
-            goto menu;
-        }
-        else if (mod == 2) {
-            a = 0;
-            goto menu;
-        }
-        else if (mod == 3) {
             goto menu;
         }
        
